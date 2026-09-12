@@ -1,0 +1,3 @@
+[build]
+  command = "node scripts/generate-firebase-config.mjs"
+  publish = "."

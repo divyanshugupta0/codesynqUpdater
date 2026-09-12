@@ -1,0 +1,15 @@
+:root { color-scheme: dark; font-family: Inter, Segoe UI, Arial, sans-serif; background: #090d18; color: #edf2ff; }
+* { box-sizing: border-box; }
+body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 15% 0%, #232869 0, transparent 34rem), #090d18; }
+.shell { width: min(850px, calc(100% - 32px)); margin: 52px auto; display: grid; gap: 18px; }
+header, .card-heading { display: flex; align-items: center; gap: 15px; }
+header .status { margin-left: auto; }
+.brand-mark { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: linear-gradient(135deg, #6170ff, #22d3ee); color: #07101f; font-weight: 900; font-size: 20px; }
+h1, h2, p { margin-top: 0; } h1 { margin-bottom: 0; font-size: 26px; } h2 { font-size: 19px; }
+.eyebrow { margin-bottom: 5px; color: #9aa8ff; letter-spacing: .12em; font-weight: 700; font-size: 11px; }
+.card { border: 1px solid #293252; border-radius: 16px; background: rgba(15, 21, 39, .9); padding: 24px; box-shadow: 0 14px 50px rgba(0,0,0,.22); }
+.current-release { display: grid; gap: 12px; } code { overflow-wrap: anywhere; color: #77e1ff; } .release-summary { color: #bdc7df; }
+form { display: grid; gap: 16px; } label { display: grid; gap: 7px; color: #d9e1f7; font-size: 14px; } input, textarea, select { border: 1px solid #38456d; border-radius: 9px; padding: 11px; background: #0a1021; color: inherit; font: inherit; } textarea { resize: vertical; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; } button { border: 0; border-radius: 9px; padding: 11px 16px; background: #6574ff; color: white; font: 700 14px inherit; cursor: pointer; } button:hover { background: #8290ff; } button:disabled { opacity: .6; cursor: wait; } .secondary { background: #263251; } .secondary:hover { background: #34436a; }
+.status { padding: 6px 10px; border-radius: 99px; background: #1d2a49; color: #bcd3ff; font-size: 12px; }.hidden { display: none; }.message { min-height: 1.3em; margin: 14px 0 0; color: #f6ce7b; }.message.error { color: #ff9caa; }
+@media (max-width: 560px) { .shell { margin: 20px auto; } .card { padding: 18px; } .grid { grid-template-columns: 1fr; } header { align-items: flex-start; } header .status { margin-left: 0; } }

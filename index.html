@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0d1117">
+    <title>CodeSynq Release Manager</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <main class="shell">
+        <header>
+            <div class="brand-mark">&lt;/&gt;</div>
+            <div>
+                <p class="eyebrow">CODESYNQ DESKTOP</p>
+                <h1>Release Manager</h1>
+            </div>
+            <span id="connectionStatus" class="status">Connecting…</span>
+        </header>
+
+        <section class="current-release card">
+            <p class="eyebrow">PUBLIC UPDATE ENDPOINT</p>
+            <code id="endpoint">Loading endpoint…</code>
+            <button id="copyEndpoint" class="secondary">Copy endpoint</button>
+            <div id="currentRelease" class="release-summary">No Windows release has been published.</div>
+        </section>
+
+        <section id="loginCard" class="card auth-card">
+            <h2>Administrator sign in</h2>
+            <p>Only users marked <code>isAdmin: true</code> in Firebase can publish a release.</p>
+            <form id="loginForm">
+                <label>Email<input id="email" type="email" autocomplete="email" required></label>
+                <label>Password<input id="password" type="password" autocomplete="current-password" required></label>
+                <button type="submit">Sign in</button>
+            </form>
+            <p id="loginMessage" class="message" role="alert"></p>
+        </section>
+
+        <section id="publisherCard" class="card hidden">
+            <div class="card-heading">
+                <div><p class="eyebrow">SIGNED IN AS</p><strong id="signedInEmail"></strong></div>
+                <button id="signOut" class="secondary">Sign out</button>
+            </div>
+            <h2>Publish Windows update</h2>
+            <form id="releaseForm">
+                <div class="grid">
+                    <label>Version<input id="version" placeholder="1.0.1" pattern="^\d+\.\d+\.\d+([-.+][0-9A-Za-z.-]+)?$" required></label>
+                    <label>Update type<select id="mandatory"><option value="false">Optional</option><option value="true">Required</option></select></label>
+                </div>
+                <label>GitHub direct download URL<input id="downloadUrl" type="url" placeholder="https://github.com/OWNER/REPO/releases/download/v1.0.1/CodeSynq-Setup-1.0.1.exe" required></label>
+                <label>Release notes<textarea id="releaseNotes" rows="5" maxlength="4000" placeholder="What changed in this release?"></textarea></label>
+                <button id="publishButton" type="submit">Upload and publish release</button>
+            </form>
+            <p id="publishMessage" class="message" role="status"></p>
+        </section>
+    </main>
+
+    <script src="firebase-config.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+    <script src="updater.js"></script>
+</body>
+</html>
