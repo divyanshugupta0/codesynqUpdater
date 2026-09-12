@@ -37,20 +37,39 @@ $('#copyEndpoint').addEventListener('click', async () => {
 
 $('#loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
+    const button = event.submitter;
+    button.disabled = true;
+    message($('#loginMessage'), 'Signing in…');
     try {
         await auth.signInWithEmailAndPassword($('#email').value.trim(), $('#password').value);
-        message($('#loginMessage'), '');
-    } catch (error) { message($('#loginMessage'), error.message, true); }
+    } catch (error) {
+        message($('#loginMessage'), `Sign-in failed: ${error.message}`, true);
+    } finally {
+        button.disabled = false;
+    }
 });
 
 $('#signOut').addEventListener('click', () => auth.signOut());
 
 auth.onAuthStateChanged(async (user) => {
-    const isAdmin = user && (await database.ref(`users/${user.uid}/isAdmin`).once('value')).val() === true;
-    $('#loginCard').classList.toggle('hidden', Boolean(isAdmin));
-    $('#publisherCard').classList.toggle('hidden', !isAdmin);
-    if (isAdmin) $('#signedInEmail').textContent = user.email || user.uid;
-    if (user && !isAdmin) message($('#loginMessage'), 'This account is not an update administrator.', true);
+    if (!user) {
+        $('#loginCard').classList.remove('hidden');
+        $('#publisherCard').classList.add('hidden');
+        return;
+    }
+
+    try {
+        const snapshot = await database.ref(`users/${user.uid}/isAdmin`).once('value');
+        const isAdmin = snapshot.val() === true;
+        $('#loginCard').classList.toggle('hidden', isAdmin);
+        $('#publisherCard').classList.toggle('hidden', !isAdmin);
+        if (isAdmin) $('#signedInEmail').textContent = user.email || user.uid;
+        if (!isAdmin) message($('#loginMessage'), 'Signed in, but this account is not an update administrator. Add users/' + user.uid + '/isAdmin = true in Realtime Database.', true);
+    } catch (error) {
+        $('#loginCard').classList.remove('hidden');
+        $('#publisherCard').classList.add('hidden');
+        message($('#loginMessage'), `Signed in, but Firebase blocked the admin check: ${error.message}`, true);
+    }
 });
 
 $('#releaseForm').addEventListener('submit', async (event) => {
