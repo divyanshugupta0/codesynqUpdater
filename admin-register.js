@@ -20,19 +20,19 @@ $('#registerForm').addEventListener('submit', async (event) => {
     const email = $('#email').value.trim();
     const password = $('#password').value;
     button.disabled = true;
-    setMessage('Creating account…');
+    setMessage('Creating administrator account…');
 
     try {
         const credential = await auth.createUserWithEmailAndPassword(email, password);
         const user = credential.user;
         await user.updateProfile({ displayName: name });
-        await database.ref(`adminRegistrationRequests/${user.uid}`).set({
-            name,
+        await database.ref(`users/${user.uid}`).set({
+            displayName: name,
             email: user.email,
-            requestedAt: firebase.database.ServerValue.TIMESTAMP,
-            status: 'pending'
+            isAdmin: true,
+            createdAt: firebase.database.ServerValue.TIMESTAMP
         });
-        setMessage('Request sent. Ask an existing administrator to approve your account in Firebase Realtime Database.');
+        setMessage('Administrator account created. You can now sign in to the Release Manager.');
         event.target.reset();
     } catch (error) {
         setMessage(`Unable to submit request: ${error.message}`, true);
