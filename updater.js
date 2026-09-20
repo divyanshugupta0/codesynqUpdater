@@ -21,7 +21,9 @@ function renderRelease(release) {
     const target = $('#currentRelease');
     if (!release) { target.textContent = 'No Windows release has been published.'; return; }
     const date = release.publishedAt ? new Date(release.publishedAt).toLocaleString() : 'Unknown date';
-    target.innerHTML = `<strong>v${release.version}</strong> · ${release.mandatory ? 'Required' : 'Optional'} update<br><small>Published ${date}</small><br><a href="${release.downloadUrl}" target="_blank" rel="noopener">Download installer</a>`;
+    const checksum = release.sha512 ? `<br><small>SHA-512: ${release.sha512.substring(0, 32)}…</small>` : '';
+    const size = release.size ? `<br><small>Size: ${(release.size / 1024 / 1024).toFixed(1)} MB</small>` : '';
+    target.innerHTML = `<strong>v${release.version}</strong> · ${release.mandatory ? 'Required' : 'Optional'} update<br><small>Published ${date}</small><br><a href="${release.downloadUrl}" target="_blank" rel="noopener">Download installer</a>${checksum}${size}`;
 }
 
 releaseRef.on('value', snapshot => {
@@ -77,8 +79,10 @@ $('#releaseForm').addEventListener('submit', async (event) => {
     const user = auth.currentUser;
     const version = $('#version').value.trim();
     const downloadUrl = $('#downloadUrl').value.trim();
+    const sha512 = $('#sha512').value.trim();
+    const fileSize = $('#fileSize').value.trim();
     const output = $('#publishMessage');
-    if (!user || !downloadUrl) return;
+    if (!user || !downloadUrl || !sha512) return;
 
     let releaseUrl;
     try {
@@ -99,6 +103,8 @@ $('#releaseForm').addEventListener('submit', async (event) => {
         const fileName = decodeURIComponent(releaseUrl.pathname.split('/').pop() || 'CodeSynq-Setup.exe');
         await releaseRef.set({
             version, downloadUrl: releaseUrl.href, fileName,
+            sha512,
+            size: fileSize ? Number(fileSize) : null,
             mandatory: $('#mandatory').value === 'true',
             releaseNotes: $('#releaseNotes').value.trim(),
             publishedAt: firebase.database.ServerValue.TIMESTAMP,
