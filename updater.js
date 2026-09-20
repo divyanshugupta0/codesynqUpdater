@@ -79,10 +79,11 @@ $('#releaseForm').addEventListener('submit', async (event) => {
     const user = auth.currentUser;
     const version = $('#version').value.trim();
     const downloadUrl = $('#downloadUrl').value.trim();
+    const latestYmlUrl = $('#latestYmlUrl').value.trim();
     const sha512 = $('#sha512').value.trim();
     const fileSize = $('#fileSize').value.trim();
     const output = $('#publishMessage');
-    if (!user || !downloadUrl || !sha512) return;
+    if (!user || !downloadUrl || !latestYmlUrl || !sha512) return;
 
     let releaseUrl;
     try {
@@ -94,6 +95,16 @@ $('#releaseForm').addEventListener('submit', async (event) => {
         return message(output, 'Use an HTTPS direct GitHub Release URL.', true);
     }
 
+    let ymlUrl;
+    try {
+        ymlUrl = new URL(latestYmlUrl);
+    } catch {
+        return message(output, 'Enter a valid GitHub latest.yml URL.', true);
+    }
+    if (ymlUrl.protocol !== 'https:' || ymlUrl.hostname !== 'github.com') {
+        return message(output, 'Use an HTTPS direct GitHub latest.yml URL.', true);
+    }
+
     const admin = (await database.ref(`users/${user.uid}/isAdmin`).once('value')).val() === true;
     if (!admin) return message(output, 'Administrator permission is required.', true);
 
@@ -102,7 +113,7 @@ $('#releaseForm').addEventListener('submit', async (event) => {
     try {
         const fileName = decodeURIComponent(releaseUrl.pathname.split('/').pop() || 'CodeSynq-Setup.exe');
         await releaseRef.set({
-            version, downloadUrl: releaseUrl.href, fileName,
+            version, downloadUrl: releaseUrl.href, latestYmlUrl: ymlUrl.href, fileName,
             sha512,
             size: fileSize ? Number(fileSize) : null,
             mandatory: $('#mandatory').value === 'true',
