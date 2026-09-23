@@ -10,7 +10,7 @@ const releaseRef = database.ref('appUpdates/windows/latest');
 const $ = (selector) => document.querySelector(selector);
 const updateEndpoint = `${window.FIREBASE_CONFIG.databaseURL.replace(/\/$/, '')}/appUpdates/windows/latest.json`;
 
-$('#endpoint').textContent = updateEndpoint;
+
 
 function message(element, text, error = false) {
     element.textContent = text;
