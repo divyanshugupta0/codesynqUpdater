@@ -31,11 +31,6 @@ releaseRef.on('value', snapshot => {
     $('#connectionStatus').textContent = 'Update endpoint online';
 });
 
-$('#copyEndpoint').addEventListener('click', async () => {
-    await navigator.clipboard.writeText($('#endpoint').textContent);
-    $('#copyEndpoint').textContent = 'Copied';
-    setTimeout(() => { $('#copyEndpoint').textContent = 'Copy endpoint'; }, 1500);
-});
 
 $('#loginForm').addEventListener('submit', async (event) => {
     event.preventDefault();
