@@ -19,21 +19,12 @@
     let currentReleaseData = null;
     let historyDataCache = {};
 
-    const fallbackConfig = {
-        databaseURL: 'https://codesynqupdater-default-rtdb.asia-southeast1.firebasedatabase.app'
-    };
-
-    const fbConfig = window.FIREBASE_CONFIG || fallbackConfig;
+    const fbConfig = window.FIREBASE_CONFIG || {};
 
     try {
         if (typeof firebase !== 'undefined' && fbConfig.apiKey) {
             firebase.initializeApp(fbConfig);
             auth = firebase.auth();
-            database = firebase.database();
-            releaseRef = database.ref('appUpdates/windows/latest');
-            historyRef = database.ref('appUpdates/windows/history');
-        } else if (typeof firebase !== 'undefined' && fbConfig.databaseURL) {
-            firebase.initializeApp(fbConfig);
             database = firebase.database();
             releaseRef = database.ref('appUpdates/windows/latest');
             historyRef = database.ref('appUpdates/windows/history');
@@ -43,7 +34,7 @@
     }
 
     const dbBaseUrl = (fbConfig.databaseURL || '').replace(/\/$/, '');
-    const updateEndpoint = `${dbBaseUrl}/appUpdates/windows/latest.json`;
+    const updateEndpoint = dbBaseUrl ? `${dbBaseUrl}/appUpdates/windows/latest.json` : 'Endpoint unconfigured';
 
     // Initialize UI endpoint displays
     const endpointEl = $('#endpoint');
