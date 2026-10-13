@@ -17,7 +17,23 @@
     let historyRef = null;
     let isConnected = false;
     let currentReleaseData = null;
-    let historyDataCache = {};
+
+    function loadLocalHistory() {
+        try {
+            const raw = localStorage.getItem('codesynq_release_registry');
+            return raw ? JSON.parse(raw) : {};
+        } catch {
+            return {};
+        }
+    }
+
+    function saveLocalHistory(data) {
+        try {
+            localStorage.setItem('codesynq_release_registry', JSON.stringify(data || {}));
+        } catch {}
+    }
+
+    let historyDataCache = loadLocalHistory();
 
     const fbConfig = window.FIREBASE_CONFIG || {};
 
@@ -280,6 +296,7 @@
                         authGate?.classList.add('hidden');
                         appInterface?.classList.remove('hidden');
                         if (authMessage) authMessage.textContent = '';
+                        attachHistoryListener();
                     } else {
                         // User exists but not marked admin
                         authGate?.classList.remove('hidden');
@@ -293,12 +310,14 @@
                     // Fallback if database not initialized
                     authGate?.classList.add('hidden');
                     appInterface?.classList.remove('hidden');
+                    attachHistoryListener();
                 }
             } catch (err) {
                 console.warn('Admin check warning:', err);
                 // Allow view if read rules are bypassed in development
                 authGate?.classList.add('hidden');
                 appInterface?.classList.remove('hidden');
+                attachHistoryListener();
             }
         });
     }
@@ -368,6 +387,17 @@
 
         renderSecurity(release);
         updateSimClient();
+
+        // Ensure active release is registered in release registry cache
+        if (release && release.version) {
+            const sanitizedKey = `v${release.version}`.replace(/[.#$/[\]]/g, '_');
+            historyDataCache[sanitizedKey] = {
+                ...release,
+                publishedAt: release.publishedAt || Date.now()
+            };
+            saveLocalHistory(historyDataCache);
+            renderHistory();
+        }
     }
 
     /* ==========================================================================
@@ -450,8 +480,27 @@
     function renderHistory(snapshot) {
         const container = $('#releaseHistoryList');
         const badge = $('#historyCountBadge');
-        const data = snapshot ? snapshot.val() : historyDataCache;
-        historyDataCache = data || {};
+
+        // Merge incoming snapshot if available
+        if (snapshot && typeof snapshot.val === 'function') {
+            const remoteVal = snapshot.val();
+            if (remoteVal && typeof remoteVal === 'object') {
+                historyDataCache = { ...historyDataCache, ...remoteVal };
+                saveLocalHistory(historyDataCache);
+            }
+        }
+
+        // Always ensure the active release is present in history records
+        if (currentReleaseData && currentReleaseData.version) {
+            const activeKey = `v${currentReleaseData.version}`.replace(/[.#$/[\]]/g, '_');
+            if (!historyDataCache[activeKey]) {
+                historyDataCache[activeKey] = {
+                    ...currentReleaseData,
+                    publishedAt: currentReleaseData.publishedAt || Date.now()
+                };
+                saveLocalHistory(historyDataCache);
+            }
+        }
 
         const entries = Object.entries(historyDataCache).sort((a, b) => {
             const timeA = a[1].publishedAt || 0;
@@ -462,13 +511,15 @@
         if (badge) badge.textContent = String(entries.length);
 
         if (!entries.length) {
-            container.innerHTML = `
-                <div style="text-align: center; padding: 48px 20px; color: var(--fg-muted);">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.6;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
-                    <p style="font-size: 15px; font-weight: 700; color: var(--brand-navy);">No Historical Releases Recorded</p>
-                    <p style="font-size: 13px; margin-top: 4px;">Releases published through this dashboard will appear here with instant rollback capability.</p>
-                </div>
-            `;
+            if (container) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 48px 20px; color: var(--fg-muted);">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.6;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <p style="font-size: 15px; font-weight: 700; color: var(--brand-navy);">No Historical Releases Recorded</p>
+                        <p style="font-size: 13px; margin-top: 4px;">Releases published through this dashboard will appear here with complete metadata and instant rollback capability.</p>
+                    </div>
+                `;
+            }
             return;
         }
 
@@ -479,11 +530,13 @@
             if (filterVal === 'mandatory' && !r.mandatory) return false;
             if (filterVal === 'optional' && r.mandatory) return false;
             if (searchVal) {
-                const combined = `${r.version || ''} ${r.fileName || ''} ${r.releaseNotes || ''}`.toLowerCase();
+                const combined = `${r.version || ''} ${r.fileName || ''} ${r.releaseNotes || ''} ${r.sha512 || ''}`.toLowerCase();
                 return combined.includes(searchVal);
             }
             return true;
         });
+
+        if (!container) return;
 
         if (!filtered.length) {
             container.innerHTML = `
@@ -495,48 +548,104 @@
         }
 
         container.innerHTML = filtered.map(([key, r]) => {
-            const isActive = currentReleaseData && currentReleaseData.version === r.version;
-            const date = r.publishedAt ? new Date(r.publishedAt).toLocaleString() : 'Unknown date';
-            const size = r.size ? formatBytes(r.size) : '';
+            const isActive = currentReleaseData && String(currentReleaseData.version) === String(r.version);
+            const date = r.publishedAt ? new Date(r.publishedAt).toLocaleString() : 'Date not recorded';
+            const sizeFormatted = r.size ? formatBytes(r.size) : '--';
+            const cleanVer = escapeHtml(r.version || key.replace(/^v/, ''));
 
             return `
                 <div class="history-card ${isActive ? 'is-active-release' : ''}" data-key="${escapeHtml(key)}">
-                    <div class="history-main-info">
-                        <span class="history-version">v${escapeHtml(r.version || key)}</span>
-                        <span class="pill ${r.mandatory ? 'pill-mandatory' : 'pill-optional'}">
-                            ${r.mandatory ? 'Mandatory' : 'Optional'}
-                        </span>
-                        ${isActive ? '<span class="pill pill-channel" style="background: var(--brand-crimson-light); color: var(--brand-crimson);">Active Live</span>' : ''}
-                        <div class="history-meta">
-                            <span>${date}</span>
-                            ${size ? `<span>· ${size}</span>` : ''}
-                            ${r.fileName ? `<span class="font-mono">· ${escapeHtml(r.fileName)}</span>` : ''}
+                    <div class="history-card-header">
+                        <div class="history-main-info">
+                            <span class="history-version">v${cleanVer}</span>
+                            <span class="pill ${r.mandatory ? 'pill-mandatory' : 'pill-optional'}">
+                                ${r.mandatory ? 'Mandatory Patch' : 'Optional Update'}
+                            </span>
+                            ${isActive ? '<span class="pill pill-channel" style="background: var(--brand-crimson-light); color: var(--brand-crimson); font-weight: 700;">● Active Live Release</span>' : '<span class="pill pill-channel" style="color: var(--fg-muted);">Archived Release</span>'}
+                            <span class="pill pill-channel">Windows · x64</span>
+                        </div>
+                        <div class="history-actions">
+                            ${!isActive ? `
+                                <button class="btn btn-secondary btn-sm rollback-btn" data-key="${escapeHtml(key)}" title="Promote this release to active live endpoint">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+                                    Rollback to this
+                                </button>
+                            ` : ''}
+                            ${r.downloadUrl ? `
+                                <a href="${escapeHtml(r.downloadUrl)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" title="Download installer .exe">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Download .exe
+                                </a>
+                            ` : ''}
+                            <button class="btn btn-secondary btn-sm copy-payload-btn" data-key="${escapeHtml(key)}" title="Copy release JSON">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                Copy JSON
+                            </button>
+                            <button class="btn btn-danger btn-sm delete-history-btn" data-key="${escapeHtml(key)}" title="Delete from registry">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
                         </div>
                     </div>
-                    <div class="history-actions">
-                        ${!isActive ? `
-                            <button class="btn btn-secondary btn-sm rollback-btn" data-key="${escapeHtml(key)}" title="Promote this release to active">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
-                                Rollback to this
-                            </button>
-                        ` : ''}
-                        ${r.downloadUrl ? `
-                            <a href="${escapeHtml(r.downloadUrl)}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" title="Download installer">
-                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                            </a>
-                        ` : ''}
-                        <button class="btn btn-secondary btn-sm copy-payload-btn" data-key="${escapeHtml(key)}" title="Copy release JSON">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                        </button>
-                        <button class="btn btn-danger btn-sm delete-history-btn" data-key="${escapeHtml(key)}" title="Delete from registry">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                        </button>
+
+                    <div class="history-details-grid">
+                        <div class="history-detail-item">
+                            <span class="detail-label">Published At</span>
+                            <span class="detail-value">${date}</span>
+                        </div>
+                        <div class="history-detail-item">
+                            <span class="detail-label">Installer Binary</span>
+                            <span class="detail-value font-mono">
+                                ${r.downloadUrl ? `<a href="${escapeHtml(r.downloadUrl)}" target="_blank" rel="noopener" style="color: var(--brand-navy); text-decoration: underline;">${escapeHtml(r.fileName || 'CodeSynq-Setup.exe')}</a>` : escapeHtml(r.fileName || 'CodeSynq-Setup.exe')}
+                            </span>
+                        </div>
+                        <div class="history-detail-item">
+                            <span class="detail-label">Package Footprint</span>
+                            <span class="detail-value">${sizeFormatted} ${r.size ? `<span style="font-weight: 400; color: var(--fg-muted); font-size: 11px;">(${Number(r.size).toLocaleString()} B)</span>` : ''}</span>
+                        </div>
+                        <div class="history-detail-item" style="grid-column: 1 / -1;">
+                            <span class="detail-label">Base64 SHA-512 Checksum</span>
+                            <div style="display: flex; align-items: center; gap: 8px; margin-top: 3px;">
+                                <span class="detail-value font-mono" style="font-size: 12px; background: #ffffff; padding: 5px 9px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); flex: 1; overflow-x: auto; white-space: nowrap;">${escapeHtml(r.sha512 || 'No checksum available')}</span>
+                                ${r.sha512 ? `
+                                    <button class="btn btn-secondary btn-sm copy-sha-btn" data-sha="${escapeHtml(r.sha512)}" title="Copy SHA-512 checksum" style="padding: 5px 9px; font-size: 11px; white-space: nowrap;">
+                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                                        Copy Hash
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
                     </div>
+
+                    <div class="history-notes-box">
+                        <div class="detail-label" style="margin-bottom: 6px;">Release Notes & Changelog</div>
+                        <div class="history-notes-content">${escapeHtml(r.releaseNotes || 'No changelog documented for this release.')}</div>
+                    </div>
+
+                    ${r.latestYmlUrl ? `
+                        <div class="history-manifest-link">
+                            <span class="detail-label">Manifest Endpoint:</span>
+                            <a href="${escapeHtml(r.latestYmlUrl)}" target="_blank" rel="noopener" class="font-mono" style="font-size: 12px; color: var(--brand-blue); display: inline-flex; align-items: center; gap: 4px;">
+                                ${escapeHtml(r.latestYmlUrl)}
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                            </a>
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }).join('');
 
         // Attach listeners for card actions
+        container.querySelectorAll('.copy-sha-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const hash = btn.dataset.sha;
+                if (hash) {
+                    navigator.clipboard.writeText(hash);
+                    showToast('SHA-512 checksum copied to clipboard', 'info');
+                }
+            });
+        });
+
         container.querySelectorAll('.rollback-btn').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const key = btn.dataset.key;
@@ -582,13 +691,19 @@
                     `Remove version ${target?.version || key} from history records? This cannot be undone.`
                 );
 
-                if (confirmed && historyRef) {
-                    try {
-                        await historyRef.child(key).remove();
-                        showToast(`Removed v${target?.version || key} from registry`, 'info');
-                    } catch (err) {
-                        showToast(`Delete failed: ${err.message}`, 'error');
+                if (confirmed) {
+                    delete historyDataCache[key];
+                    saveLocalHistory(historyDataCache);
+                    renderHistory();
+
+                    if (historyRef) {
+                        try {
+                            await historyRef.child(key).remove();
+                        } catch (err) {
+                            console.warn('Firebase history delete notice:', err);
+                        }
                     }
+                    showToast(`Removed v${target?.version || key} from registry`, 'info');
                 }
             });
         });
@@ -612,22 +727,50 @@
     $('#clearHistoryBtn')?.addEventListener('click', async () => {
         const confirmed = await confirmAction(
             'Clear Entire Release Registry',
-            'Are you sure you want to delete ALL historical release entries? The active release will NOT be deleted.'
+            'Are you sure you want to delete historical release entries? The active live release will remain active.'
         );
 
-        if (confirmed && historyRef) {
-            try {
-                await historyRef.remove();
-                showToast('Release registry cleared', 'info');
-            } catch (err) {
-                showToast(`Clear failed: ${err.message}`, 'error');
+        if (confirmed) {
+            if (currentReleaseData && currentReleaseData.version) {
+                const activeKey = `v${currentReleaseData.version}`.replace(/[.#$/[\]]/g, '_');
+                historyDataCache = {
+                    [activeKey]: { ...currentReleaseData }
+                };
+            } else {
+                historyDataCache = {};
             }
+            saveLocalHistory(historyDataCache);
+            renderHistory();
+
+            if (historyRef) {
+                try {
+                    await historyRef.remove();
+                } catch (err) {
+                    console.warn('Firebase history clear notice:', err);
+                }
+            }
+            showToast('Release registry cleared', 'info');
         }
     });
 
     /* ==========================================================================
-       Live Database Listeners & Refresh
+       Live Database Listeners & History Attachment
        ========================================================================== */
+    function attachHistoryListener() {
+        if (!historyRef) return;
+        try {
+            historyRef.off();
+        } catch {}
+
+        historyRef.on('value', snapshot => {
+            renderHistory(snapshot);
+        }, error => {
+            console.warn('History read notice:', error.message || error);
+            // Even if Firebase rules restrict unauthenticated history reads, render local cache
+            renderHistory(null);
+        });
+    }
+
     if (releaseRef) {
         releaseRef.on('value', snapshot => {
             isConnected = true;
@@ -643,11 +786,8 @@
         });
     }
 
-    if (historyRef) {
-        historyRef.on('value', renderHistory, error => {
-            console.warn('History read notice:', error);
-        });
-    }
+    // Attach history listener immediately
+    attachHistoryListener();
 
     // Refresh button
     $('#refreshBtn')?.addEventListener('click', async () => {
@@ -661,8 +801,13 @@
                 renderRelease(snap.val());
             }
             if (historyRef) {
-                const histSnap = await historyRef.once('value');
-                renderHistory(histSnap);
+                try {
+                    const histSnap = await historyRef.once('value');
+                    renderHistory(histSnap);
+                } catch (histErr) {
+                    console.warn('History sync notice:', histErr.message || histErr);
+                    renderHistory(null);
+                }
             }
             showToast('Release data synchronized', 'success');
         } catch (err) {
@@ -848,13 +993,18 @@
         try {
             await releaseRef.set(releasePayload);
 
-            const sanitizedKey = version.replace(/[.#$/[\]]/g, '_');
+            const sanitizedKey = `v${version}`.replace(/[.#$/[\]]/g, '_');
+            const historyItem = {
+                ...releasePayload,
+                publishedAt: Date.now()
+            };
+            historyDataCache[sanitizedKey] = historyItem;
+            saveLocalHistory(historyDataCache);
+            renderHistory();
+
             if (historyRef) {
                 try {
-                    await historyRef.child(sanitizedKey).set({
-                        ...releasePayload,
-                        publishedAt: Date.now()
-                    });
+                    await historyRef.child(sanitizedKey).set(historyItem);
                 } catch (histErr) {
                     console.warn('History archival notice:', histErr);
                 }
