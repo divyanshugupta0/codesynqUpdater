@@ -1,14 +1,17 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#faf7f2">
     <title>CodeSynq Desktop · Release & Update Orchestrator</title>
-    <meta name="description" content="Centralized release management, security auditing, and live update distribution portal for CodeSynq Desktop.">
+    <meta name="description"
+        content="Centralized release management, security auditing, and live update distribution portal for CodeSynq Desktop.">
     <link rel="icon" type="image/x-icon" href="images/icon.ico">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <a class="skip-link" href="#mainContent">Skip to content</a>
 
@@ -51,16 +54,23 @@
                     <label class="form-label" for="gatePassword">
                         Password
                         <span class="form-hint">
-                            <a href="#" id="toggleGatePassword" style="color: var(--brand-blue); text-decoration: none; font-weight: 600;">Show</a>
+                            <a href="#" id="toggleGatePassword"
+                                style="color: var(--brand-blue); text-decoration: none; font-weight: 600;">Show</a>
                         </span>
                     </label>
-                    <input id="gatePassword" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••••••">
+                    <input id="gatePassword" type="password" autocomplete="current-password" required minlength="6"
+                        placeholder="••••••••••••">
                 </div>
 
-                <div id="authGateMessage" style="min-height: 20px; font-size: 13px; margin-bottom: 14px; font-weight: 600;"></div>
+                <div id="authGateMessage"
+                    style="min-height: 20px; font-size: 13px; margin-bottom: 14px; font-weight: 600;"></div>
 
                 <button type="submit" id="gateLoginBtn" class="btn btn-primary btn-lg" style="width: 100%;">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                        <polyline points="10 17 15 12 10 7" />
+                        <line x1="15" y1="12" x2="3" y2="12" />
+                    </svg>
                     Sign In to Console
                 </button>
             </form>
@@ -90,9 +100,10 @@
                 <span id="connectionStatus" class="status" aria-live="polite">
                     <span class="status-dot"></span> <span id="statusText">Connecting…</span>
                 </span>
-                
+
                 <button id="refreshBtn" class="icon-btn" title="Refresh all data" aria-label="Refresh data">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
                         <polyline points="1 20 1 14 7 14"></polyline>
                         <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"></path>
@@ -102,9 +113,15 @@
                 <!-- Auth / User profile in header -->
                 <div class="user-profile-badge">
                     <div class="user-avatar" id="userAvatar">A</div>
-                    <span id="headerUserEmail" class="font-mono" style="font-weight: 600; font-size: 12px; color: var(--brand-navy);">admin@codesynq.io</span>
+                    <span id="headerUserEmail" class="font-mono"
+                        style="font-weight: 600; font-size: 12px; color: var(--brand-navy);">admin@codesynq.io</span>
                     <button id="signOutBtn" class="btn btn-secondary btn-sm" title="Sign out" style="padding: 4px 8px;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
                         Sign Out
                     </button>
                 </div>
@@ -117,7 +134,11 @@
                 <div class="stat-header">
                     <span>Active Version</span>
                     <span class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 14 14" />
+                        </svg>
                     </span>
                 </div>
                 <div class="stat-value" id="kpiVersion">v---</div>
@@ -128,7 +149,12 @@
                 <div class="stat-header">
                     <span>Release Channel</span>
                     <span class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg>
                     </span>
                 </div>
                 <div class="stat-value">Stable</div>
@@ -139,7 +165,11 @@
                 <div class="stat-header">
                     <span>Package Footprint</span>
                     <span class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        </svg>
                     </span>
                 </div>
                 <div class="stat-value" id="kpiSize">-- MB</div>
@@ -150,7 +180,10 @@
                 <div class="stat-header">
                     <span>Security Integrity</span>
                     <span class="stat-icon">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
                     </span>
                 </div>
                 <div class="stat-value" id="kpiScore">100%</div>
@@ -161,25 +194,45 @@
         <!-- Navigation Tabs -->
         <nav class="tabs-container" aria-label="Orchestrator sections">
             <div class="tabs-nav" role="tablist">
-                <button class="tab-btn active" role="tab" aria-selected="true" data-tab="tab-overview" id="tabBtnOverview">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <button class="tab-btn active" role="tab" aria-selected="true" data-tab="tab-overview"
+                    id="tabBtnOverview">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                    </svg>
                     Overview & Endpoint
                 </button>
                 <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-publish" id="tabBtnPublish">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z" />
+                        <path
+                            d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z" />
+                    </svg>
                     Publish Release
                 </button>
                 <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-history" id="tabBtnHistory">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 8 12 12 14 14"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <polyline points="12 8 12 12 14 14" />
+                    </svg>
                     Release Registry
                     <span class="tab-badge" id="historyCountBadge">0</span>
                 </button>
                 <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-tools" id="tabBtnTools">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
                     SHA-512 & Manifest Studio
                 </button>
                 <button class="tab-btn" role="tab" aria-selected="false" data-tab="tab-simulator" id="tabBtnSimulator">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="4 17 10 11 4 5" />
+                        <line x1="12" y1="19" x2="20" y2="19" />
+                    </svg>
                     Client Emulator & API
                 </button>
             </div>
@@ -195,7 +248,13 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Distribution Service</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <line x1="2" y1="12" x2="22" y2="12" />
+                                <path
+                                    d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                            </svg>
                             Live Update Feed URL
                         </h2>
                     </div>
@@ -206,12 +265,23 @@
                     <span class="terminal-prefix">GET</span>
                     <div class="terminal-content" id="endpoint">Connecting to Firebase…</div>
                     <div class="terminal-actions">
-                        <button id="copyEndpointBtn" class="btn btn-secondary btn-sm" title="Copy endpoint to clipboard">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        <button id="copyEndpointBtn" class="btn btn-secondary btn-sm"
+                            title="Copy endpoint to clipboard">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                            </svg>
                             Copy URL
                         </button>
-                        <a id="openEndpointLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary btn-sm" title="Open feed in browser">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        <a id="openEndpointLink" href="#" target="_blank" rel="noopener"
+                            class="btn btn-secondary btn-sm" title="Open feed in browser">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                                <polyline points="15 3 21 3 21 9" />
+                                <line x1="10" y1="14" x2="21" y2="3" />
+                            </svg>
                         </a>
                     </div>
                 </div>
@@ -225,8 +295,14 @@
                             <span class="pill pill-channel">Windows x64</span>
                         </div>
                         <div style="display: flex; gap: 8px;">
-                            <a id="showcaseDownloadLink" href="#" target="_blank" rel="noopener" class="btn btn-crimson btn-sm hidden">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <a id="showcaseDownloadLink" href="#" target="_blank" rel="noopener"
+                                class="btn btn-crimson btn-sm hidden">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
                                 Download Installer
                             </a>
                         </div>
@@ -247,7 +323,8 @@
                         </div>
                         <div class="showcase-item">
                             <span class="showcase-label">SHA-512 Digest</span>
-                            <span class="showcase-val font-mono truncate" id="showcaseSha512" style="max-width: 240px;">--</span>
+                            <span class="showcase-val font-mono truncate" id="showcaseSha512"
+                                style="max-width: 240px;">--</span>
                         </div>
                     </div>
 
@@ -264,7 +341,10 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Enterprise Compliance</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--status-success)"
+                                stroke-width="2">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                            </svg>
                             Security Posture & Integrity Audit
                         </h2>
                     </div>
@@ -286,12 +366,17 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Release Dispatcher</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-navy)" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-navy)"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
                             Publish Windows Release
                         </h2>
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <button type="button" id="fillSampleBtn" class="btn btn-secondary btn-sm" title="Fill template values for testing">
+                        <button type="button" id="fillSampleBtn" class="btn btn-secondary btn-sm"
+                            title="Fill template values for testing">
                             Fill Sample Data
                         </button>
                     </div>
@@ -300,11 +385,18 @@
                 <!-- GitHub Release Auto-Fill Utility -->
                 <div class="quick-fill-banner">
                     <div class="quick-fill-info">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-crimson)" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
-                        <span><strong>GitHub Fast-Fill:</strong> Paste a GitHub Release tag URL to automatically configure endpoints</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--brand-crimson)"
+                            stroke-width="2">
+                            <path
+                                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                        </svg>
+                        <span><strong>GitHub Fast-Fill:</strong> Paste a GitHub Release tag URL to automatically
+                            configure endpoints</span>
                     </div>
                     <div style="display: flex; gap: 8px; flex: 1; max-width: 500px;">
-                        <input id="githubAutoUrl" type="url" placeholder="https://github.com/owner/repo/releases/tag/v1.0.5" style="padding: 7px 12px; font-size: 12px; background: #fff;">
+                        <input id="githubAutoUrl" type="url"
+                            placeholder="https://github.com/owner/repo/releases/tag/v1.0.5"
+                            style="padding: 7px 12px; font-size: 12px; background: #fff;">
                         <button type="button" id="parseGithubBtn" class="btn btn-indigo btn-sm">Auto-Detect</button>
                     </div>
                 </div>
@@ -316,7 +408,8 @@
                                 Semantic Version
                                 <span class="form-hint">e.g. 1.0.2</span>
                             </label>
-                            <input id="version" class="font-mono" placeholder="1.0.2" pattern="^\d+\.\d+\.\d+([-.+][0-9A-Za-z.-]+)?$" required aria-required="true">
+                            <input id="version" class="font-mono" placeholder="1.0.2"
+                                pattern="^\d+\.\d+\.\d+([-.+][0-9A-Za-z.-]+)?$" required aria-required="true">
                         </div>
 
                         <div class="form-group">
@@ -336,7 +429,9 @@
                             GitHub Direct Download URL (.exe)
                             <span class="form-hint">Must be https://github.com/...</span>
                         </label>
-                        <input id="downloadUrl" type="url" class="font-mono" placeholder="https://github.com/divyanshugupta0/codesynq/releases/download/v1.0.2/CodeSynq-Setup-1.0.2.exe" required aria-required="true">
+                        <input id="downloadUrl" type="url" class="font-mono"
+                            placeholder="https://github.com/divyanshugupta0/codesynq/releases/download/v1.0.2/CodeSynq-Setup-1.0.2.exe"
+                            required aria-required="true">
                     </div>
 
                     <div class="form-group">
@@ -344,16 +439,21 @@
                             GitHub latest.yml URL (electron-updater manifest)
                             <span class="form-hint">Used for checksum & delta calculation</span>
                         </label>
-                        <input id="latestYmlUrl" type="url" class="font-mono" placeholder="https://github.com/divyanshugupta0/codesynq/releases/download/v1.0.2/latest.yml" required aria-required="true">
+                        <input id="latestYmlUrl" type="url" class="font-mono"
+                            placeholder="https://github.com/divyanshugupta0/codesynq/releases/download/v1.0.2/latest.yml"
+                            required aria-required="true">
                     </div>
 
                     <div class="form-row">
                         <div class="form-group">
                             <label class="form-label" for="sha512">
                                 SHA-512 Checksum (Base64)
-                                <span class="form-hint"><a href="#tools" class="use-hash-tool-link" style="color: var(--brand-crimson); font-weight: 700;">Compute in Studio →</a></span>
+                                <span class="form-hint"><a href="#tools" class="use-hash-tool-link"
+                                        style="color: var(--brand-crimson); font-weight: 700;">Compute in Studio
+                                        →</a></span>
                             </label>
-                            <input id="sha512" class="font-mono" placeholder="Base64-encoded 64-byte hash" required aria-required="true">
+                            <input id="sha512" class="font-mono" placeholder="Base64-encoded 64-byte hash" required
+                                aria-required="true">
                         </div>
 
                         <div class="form-group">
@@ -370,7 +470,8 @@
                             Release Notes / Changelog
                             <span class="form-hint">Markdown supported · Max 4000 characters</span>
                         </label>
-                        <textarea id="releaseNotes" rows="5" maxlength="4000" placeholder="- Fixes LSP bridge sync&#10;- Adds dark mode preview&#10;- Security certificate upgrade"></textarea>
+                        <textarea id="releaseNotes" rows="5" maxlength="4000"
+                            placeholder="- Fixes LSP bridge sync&#10;- Adds dark mode preview&#10;- Security certificate upgrade"></textarea>
                     </div>
 
                     <!-- Live Payload Preview Box -->
@@ -382,9 +483,15 @@
                         <pre class="code-block" id="payloadPreview">{\n  "version": "...",\n  "status": "ready"\n}</pre>
                     </div>
 
-                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 10px;">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-top: 10px;">
                         <button type="submit" id="publishButton" class="btn btn-primary btn-lg">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
                             Publish Live Release to Firebase
                         </button>
                         <span id="publishStatusIndicator" class="stat-sub"></span>
@@ -402,13 +509,23 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Audit & Rollback Hub</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-navy)" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-navy)"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 14 14" />
+                            </svg>
                             Historical Release Registry
                         </h2>
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <button id="exportHistoryBtn" class="btn btn-secondary btn-sm" title="Export release registry as JSON">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                        <button id="exportHistoryBtn" class="btn btn-secondary btn-sm"
+                            title="Export release registry as JSON">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
                             Export JSON
                         </button>
                         <button id="clearHistoryBtn" class="btn btn-danger btn-sm" title="Delete all history entries">
@@ -419,11 +536,16 @@
 
                 <div class="history-controls">
                     <div class="search-box">
-                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
                         <input id="historySearchInput" type="text" placeholder="Search by version, filename, or notes…">
                     </div>
                     <div style="display: flex; gap: 8px;">
-                        <select id="historyFilterSelect" style="width: auto; padding: 8px 30px 8px 12px; font-size: 12px; background-color: #fff;">
+                        <select id="historyFilterSelect"
+                            style="width: auto; padding: 8px 30px 8px 12px; font-size: 12px; background-color: #fff;">
                             <option value="all">All Releases</option>
                             <option value="mandatory">Mandatory Only</option>
                             <option value="optional">Optional Only</option>
@@ -448,7 +570,11 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Client-Side Cryptography</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-crimson)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-crimson)"
+                                stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                            </svg>
                             SHA-512 Hash & Manifest Studio
                         </h2>
                     </div>
@@ -456,13 +582,20 @@
                 </div>
 
                 <p class="card-desc" style="margin-bottom: 20px;">
-                    Electron-updater requires a <strong>Base64-encoded SHA-512 checksum</strong> and exact byte size. Drag and drop your built <code>.exe</code> installer below to compute it locally in your browser.
+                    Electron-updater requires a <strong>Base64-encoded SHA-512 checksum</strong> and exact byte size.
+                    Drag and drop your built <code>.exe</code> installer below to compute it locally in your browser.
                 </p>
 
                 <!-- Drag & Drop Zone -->
-                <div id="hashDropzone" class="dropzone" tabindex="0" role="button" aria-label="Drop installer file to calculate hash">
+                <div id="hashDropzone" class="dropzone" tabindex="0" role="button"
+                    aria-label="Drop installer file to calculate hash">
                     <div class="dropzone-icon">
-                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                            <polyline points="17 8 12 3 7 8" />
+                            <line x1="12" y1="3" x2="12" y2="15" />
+                        </svg>
                     </div>
                     <div class="dropzone-text">
                         <h3>Drop CodeSynq-Setup.exe or Click to Browse</h3>
@@ -473,8 +606,10 @@
 
                 <!-- Hash Calculation Progress & Result -->
                 <div id="hashResultBox" class="hash-result-box hidden">
-                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                        <strong id="hashFileName" style="color: var(--brand-navy); font-family: var(--font-mono);">Setup.exe</strong>
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                        <strong id="hashFileName"
+                            style="color: var(--brand-navy); font-family: var(--font-mono);">Setup.exe</strong>
                         <span id="hashFileSize" class="pill pill-channel">0 Bytes</span>
                     </div>
 
@@ -496,11 +631,19 @@
 
                     <div style="display: flex; gap: 12px; margin-top: 8px; flex-wrap: wrap;">
                         <button id="applyHashToFormBtn" class="btn btn-primary btn-sm">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
                             Apply to Publisher Form
                         </button>
                         <button id="downloadLatestYmlBtn" class="btn btn-crimson btn-sm">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
                             Generate & Download latest.yml
                         </button>
                     </div>
@@ -517,7 +660,11 @@
                     <div class="card-title-group">
                         <span class="eyebrow">Client Verification Workbench</span>
                         <h2 class="card-title">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--brand-blue)"
+                                stroke-width="2">
+                                <polyline points="4 17 10 11 4 5" />
+                                <line x1="12" y1="19" x2="20" y2="19" />
+                            </svg>
                             Desktop App Update Simulator
                         </h2>
                     </div>
@@ -525,7 +672,8 @@
                 </div>
 
                 <p class="card-desc" style="margin-bottom: 20px;">
-                    Test how the CodeSynq Desktop client (Electron runtime) evaluates the live endpoint given an installed client version.
+                    Test how the CodeSynq Desktop client (Electron runtime) evaluates the live endpoint given an
+                    installed client version.
                 </p>
 
                 <div class="form-row" style="align-items: flex-end; margin-bottom: 20px;">
@@ -534,33 +682,32 @@
                             Simulated Installed Version
                             <span class="form-hint">Version currently running on user's PC</span>
                         </label>
-                        <input id="simClientVersion" class="font-mono" value="1.0.0" placeholder="1.0.0" style="background: #fff;">
+                        <input id="simClientVersion" class="font-mono" value="1.0.0" placeholder="1.0.0"
+                            style="background: #fff;">
                     </div>
                     <div class="form-group" style="flex: 0 0 auto;">
                         <button id="runSimBtn" class="btn btn-primary" style="height: 44px;">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3" />
+                            </svg>
                             Simulate Check
                         </button>
                     </div>
                 </div>
 
-                <div id="simResultBox" class="terminal-box" style="flex-direction: column; align-items: stretch; gap: 10px;">
+                <div id="simResultBox" class="terminal-box"
+                    style="flex-direction: column; align-items: stretch; gap: 10px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <strong style="color: #38bdf8;">Simulation Outcome:</strong>
                         <span id="simOutcomeBadge" class="pill pill-mandatory">Action Required</span>
                     </div>
-                    <div id="simLog" style="font-family: var(--font-mono); font-size: 12px; color: #cbd5e1; line-height: 1.6;">
+                    <div id="simLog"
+                        style="font-family: var(--font-mono); font-size: 12px; color: #cbd5e1; line-height: 1.6;">
                         Press "Simulate Check" to evaluate client vs remote release.
                     </div>
                 </div>
 
-                <div class="form-group" style="margin-top: 24px;">
-                    <label class="form-label">
-                        Query Live Endpoint with cURL / PowerShell
-                        <span class="form-hint">Command-line verification</span>
-                    </label>
-                    <pre class="code-block" id="curlSnippet">curl -s https://codesynqupdater-default-rtdb.asia-southeast1.firebasedatabase.app/appUpdates/windows/latest.json | jq .</pre>
-                </div>
             </div>
         </section>
 
@@ -568,7 +715,8 @@
         <div id="confirmModalOverlay" class="modal-overlay hidden" role="dialog" aria-modal="true">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 id="confirmModalTitle" style="font-size: 16px; font-weight: 800; color: var(--brand-navy);">Confirm Action</h3>
+                    <h3 id="confirmModalTitle" style="font-size: 16px; font-weight: 800; color: var(--brand-navy);">
+                        Confirm Action</h3>
                     <button id="closeConfirmModalBtn" class="icon-btn">✕</button>
                 </div>
                 <div class="modal-body" id="confirmModalMessage">
@@ -593,4 +741,5 @@
     <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
     <script src="updater.js"></script>
 </body>
+
 </html>
