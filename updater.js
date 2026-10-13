@@ -18,6 +18,14 @@
     let isConnected = false;
     let currentReleaseData = null;
 
+    function canonicalVersion(v) {
+        return String(v || '').trim().replace(/^v/i, '');
+    }
+
+    function canonicalKey(v) {
+        return `v${canonicalVersion(v).replace(/[.#$/[\]]/g, '_')}`;
+    }
+
     function loadLocalHistory() {
         try {
             const raw = localStorage.getItem('codesynq_release_registry');
@@ -390,9 +398,10 @@
 
         // Ensure active release is registered in release registry cache
         if (release && release.version) {
-            const sanitizedKey = `v${release.version}`.replace(/[.#$/[\]]/g, '_');
+            const sanitizedKey = canonicalKey(release.version);
             historyDataCache[sanitizedKey] = {
                 ...release,
+                version: canonicalVersion(release.version),
                 publishedAt: release.publishedAt || Date.now()
             };
             saveLocalHistory(historyDataCache);
@@ -486,23 +495,49 @@
             const remoteVal = snapshot.val();
             if (remoteVal && typeof remoteVal === 'object') {
                 historyDataCache = { ...historyDataCache, ...remoteVal };
-                saveLocalHistory(historyDataCache);
             }
         }
 
-        // Always ensure the active release is present in history records
+        // Deduplicate and canonicalize all releases by semantic version
+        const versionMap = new Map();
+        for (const [key, r] of Object.entries(historyDataCache)) {
+            if (!r) continue;
+            const ver = canonicalVersion(r.version || key);
+            if (!ver) continue;
+            const existing = versionMap.get(ver);
+            if (!existing || (r.publishedAt || 0) >= (existing.release.publishedAt || 0)) {
+                versionMap.set(ver, {
+                    key: canonicalKey(ver),
+                    release: { ...r, version: ver }
+                });
+            }
+        }
+
+        // Seamlessly integrate active live release without creating duplicate records
         if (currentReleaseData && currentReleaseData.version) {
-            const activeKey = `v${currentReleaseData.version}`.replace(/[.#$/[\]]/g, '_');
-            if (!historyDataCache[activeKey]) {
-                historyDataCache[activeKey] = {
-                    ...currentReleaseData,
-                    publishedAt: currentReleaseData.publishedAt || Date.now()
-                };
-                saveLocalHistory(historyDataCache);
-            }
+            const activeVer = canonicalVersion(currentReleaseData.version);
+            const activeKey = canonicalKey(activeVer);
+            const existing = versionMap.get(activeVer);
+            const merged = {
+                ...(existing ? existing.release : {}),
+                ...currentReleaseData,
+                version: activeVer,
+                publishedAt: currentReleaseData.publishedAt || (existing ? existing.release.publishedAt : Date.now())
+            };
+            versionMap.set(activeVer, { key: activeKey, release: merged });
         }
 
-        const entries = Object.entries(historyDataCache).sort((a, b) => {
+        // Clean up historyDataCache and synchronize local storage
+        const cleanedCache = {};
+        const entries = [];
+        for (const [ver, item] of versionMap.entries()) {
+            cleanedCache[item.key] = item.release;
+            entries.push([item.key, item.release]);
+        }
+        historyDataCache = cleanedCache;
+        saveLocalHistory(historyDataCache);
+
+        entries.sort((a, b) => {
             const timeA = a[1].publishedAt || 0;
             const timeB = b[1].publishedAt || 0;
             return timeB - timeA;
@@ -548,7 +583,7 @@
         }
 
         container.innerHTML = filtered.map(([key, r]) => {
-            const isActive = currentReleaseData && String(currentReleaseData.version) === String(r.version);
+            const isActive = currentReleaseData && canonicalVersion(currentReleaseData.version) === canonicalVersion(r.version);
             const date = r.publishedAt ? new Date(r.publishedAt).toLocaleString() : 'Date not recorded';
             const sizeFormatted = r.size ? formatBytes(r.size) : '--';
             const cleanVer = escapeHtml(r.version || key.replace(/^v/, ''));
@@ -977,8 +1012,9 @@
         button.innerHTML = '<span class="status-dot"></span> Publishing version to Firebase…';
 
         const fileName = decodeURIComponent(releaseUrl.pathname.split('/').pop() || 'CodeSynq-Setup.exe');
+        const cleanVer = canonicalVersion(version);
         const releasePayload = {
-            version,
+            version: cleanVer,
             downloadUrl: releaseUrl.href,
             latestYmlUrl: ymlUrl.href,
             fileName,
@@ -993,7 +1029,7 @@
         try {
             await releaseRef.set(releasePayload);
 
-            const sanitizedKey = `v${version}`.replace(/[.#$/[\]]/g, '_');
+            const sanitizedKey = canonicalKey(cleanVer);
             const historyItem = {
                 ...releasePayload,
                 publishedAt: Date.now()
